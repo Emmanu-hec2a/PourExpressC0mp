@@ -17,6 +17,10 @@
 }
 
 @layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
   body {
     @apply bg-brand-green text-white/90 antialiased;
     font-family: var(--font-display);
@@ -50,6 +54,16 @@
 
   .card-minimal {
     @apply bg-white/5 p-8 rounded-[32px] transition-all duration-500 hover:bg-white/10;
+  }
+}
+
+section[id] {
+  scroll-margin-top: 6rem;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
   }
 }
 
