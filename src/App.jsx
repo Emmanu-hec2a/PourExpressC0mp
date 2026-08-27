@@ -24,6 +24,7 @@ import {
   Music2,
   Phone
 } from 'lucide-react';
+import logo from './assets/logo.png';
 import './index.css';
 
 // --- Scroll to Top Helper ---
@@ -61,7 +62,7 @@ const Navbar = () => {
         <Link to="/" className="flex items-center gap-1 group cursor-pointer">
           <div className="group-hover:scale-105 transition-transform duration-300">
              <img
-               src="/src/assets/logo.png"
+               src={logo}
                className="h-16 w-auto object-contain"
                alt="PourExpress Logo"
              />
@@ -129,7 +130,7 @@ const Navbar = () => {
               <div className="mt-auto pb-8">
                  <div className="flex items-center gap-1 mb-6">
                     <div>
-                      <img src="/src/assets/logo.png" className="h-10 w-auto object-contain" alt="Logo" />
+                      <img src={logo} className="h-10 w-auto object-contain" alt="Logo" />
                     </div>
                     <span className="text-xl font-bold tracking-tighter text-white uppercase italic">PourExpress</span>
                  </div>
@@ -562,7 +563,7 @@ const Footer = () => {
           <div className="col-span-2">
              <div className="flex items-center gap-1 mb-6">
                 <div>
-                  <img src="/src/assets/logo.png" className="h-10 w-auto object-contain" alt="Logo" />
+                  <img src={logo} className="h-10 w-auto object-contain" alt="Logo" />
                 </div>
                 <span className="text-xl font-bold tracking-tighter text-white uppercase italic">PourExpress</span>
              </div>
