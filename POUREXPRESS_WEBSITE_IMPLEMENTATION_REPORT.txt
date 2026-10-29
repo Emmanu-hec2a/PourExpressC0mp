@@ -1,0 +1,267 @@
+POUREXPRESS WEBSITE IMPLEMENTATION & VERIFICATION REPORT
+======================================================
+Date: 29 October 2026 (Africa/Nairobi)
+Repository: C:\Users\PC\Desktop\PourExpress
+Status: implemented and checked locally; NOT deployed.
+Baseline commit inspected: 4c2e7b5
+
+1. EXECUTIVE RESULT
+-------------------
+The single-page marketing experience has been reorganized into an
+11-page, responsive public website with a shared design system, clear
+customer/merchant/rider journeys, real app imagery, and build-time HTML.
+
+This is WEBSITE-ONLY work. No customer, rider, merchant, Super Admin or
+backend source was changed for this implementation. No database migration,
+production API call, real support submission, email, DNS change, deployment,
+commit or push was performed.
+
+Production readiness is not the same as local verification. The release
+checks in section 10 still need an owner and the actual hosting environment.
+
+2. PAGES AND VISITOR JOURNEYS
+-----------------------------
+/                     Customer-first homepage and audience entry points.
+/app                  App features, availability, Play link and QR.
+/merchants            Merchant overview and existing-dashboard handoff.
+/merchants/pricing    Confirmed monthly prices and commissions.
+/riders               Rider overview, redacted preview and existing app.
+/help                 Local FAQ search, categories and support handoff.
+/about                Brand introduction and labelled illustrative image.
+/contact              Approved email/WhatsApp and audience guidance.
+/responsible-delivery Conservative adult/ID guidance; no legal guarantee.
+/privacy              Existing policy wording retained.
+/terms                Existing terms with authorized fee-copy correction.
+
+Existing /about, /privacy and /terms URLs remain. Meaningful legacy section
+anchors are retained. Unknown pages have a designed 404. The local static
+preview returns HTTP 404 for missing routes/assets rather than serving the
+homepage with a misleading 200 response.
+
+3. OWNER-CONFIRMED PUBLIC CONTENT
+---------------------------------
+Google Play: https://play.google.com/store/apps/details?id=com.pourexpress.sip
+The owner confirmed customers AND riders use this same listing.
+iOS: coming soon, no invented listing, date, signup or download link.
+Merchant dashboard: https://merchants.pourexpress.co.ke
+Support email: support@pourexpress.co.ke
+WhatsApp: +254718258821 / https://wa.me/254718258821
+
+Free: KES 0/month + 10% commission.
+Base: KES 3,000/month + 8% commission.
+Pro: KES 5,000/month + 5% commission.
+Enterprise: custom pricing / negotiable commission.
+
+The owner explicitly authorized aligning the website Terms with these
+prices. This changes public website copy only, NOT billing logic. Prices
+and contact destinations are centralized rather than repeated ad hoc.
+
+The Play listing was publicly reachable during verification. Its store
+contact/branding differs in places from the approved website content;
+review store-console consistency separately. No store-console change was
+made. The merchant destination needs a manual signed-out check: an
+automated fetch did not verify it, which alone does not prove it is down.
+
+4. DESIGN AND INTERACTION
+--------------------------
+Forest green, warm cream and accessible orange accents; responsive type,
+spacing and components; sticky header; separate audience navigation;
+native mobile dialog with Escape, focus handling and background scroll
+locking; skip link, navigation focus and browser-back scroll restoration;
+visible focus states, reduced-motion rules and semantic FAQ disclosure.
+
+Download actions use the exact approved Play URL. The QR is generated
+locally from that URL and has an equivalent text link. An official Google
+Play badge is also stored locally. iOS status is informative, not clickable.
+No automatic device redirect, fake rating, fake counter, new checkout,
+account system or placeholder enquiry form was introduced.
+
+Sites presentation-led guidance informed the audience structure and visual
+hierarchy. The workflow stayed local-only: no Sites project registration,
+source synchronization or publication.
+
+5. IMAGES AND PRIVACY
+----------------------
+Owner-supplied customer home and store screenshots are optimized locally.
+Rider and tracking screenshots were privacy-edited using the built-in
+image-generation tool at the owner's request. Maps, routes, place names,
+order references and transaction amounts in those two images are obscured.
+Only the redacted derivatives are in public/images; their private originals
+were not copied into the public build.
+
+A generated editorial still life appears on About and is labelled as an
+illustration, not a merchant photo or purchasable product listing.
+Asset sources, saved paths, prompt specifications and handling instructions
+are documented in ASSET_PROVENANCE.txt.
+Final owner review of all visible redactions is a release requirement.
+
+6. TECHNICAL IMPLEMENTATION
+---------------------------
+React/Vite retained; shared layout and independently composed route pages.
+All 11 routes and a standalone 404 are prerendered during npm run build.
+The output is static: publish dist only. .prerender is build-time tooling,
+not a required production Node service.
+
+Per-page initial title/description/canonical, social metadata, truthful
+Organization structured data, sitemap and robots are generated. Client
+navigation updates page metadata. SITE_PREVIEW=1 creates noindex output
+and preserves noindex across client navigation; robots is not access control.
+
+Local preview has exact-case routing, proper asset MIME types, GET/HEAD,
+404 handling and traversal/symlink safeguards. Actual production routing,
+headers, caching and redirects are NOT established by local server tests.
+
+No analytics, tracking SDK, cookies, remote font dependency or new public
+data-collection endpoint was added. Support opens the existing email or
+WhatsApp channel and does not pretend to create a website ticket.
+
+7. VERIFICATION RESULTS (29 OCTOBER 2026)
+-----------------------------------------
+npm run lint: PASS.
+npm test: PASS, 26/26 tests after the approved site-name/favicon follow-up.
+npm run build: PASS, 11 HTML pages plus 404/sitemap/robots.
+npm run test:browser: PASS using installed Chrome and axe-core 4.14.0.
+
+Browser suite:
+- 11 direct route loads and refreshes.
+- 113 responsive/short-height checks.
+- Widths: 320, 375, 390, 768, 1024, 1440, 1920 pixels.
+- Short viewports: 375x480, 768x320, 1024x480.
+- 23 axe scans using WCAG 2/2.1/2.2 A/AA tags; zero detected violations.
+- Real 404 and missing-asset checks.
+- Mobile open/close/reopen/Escape/focus, native FAQ keyboard interaction,
+  local help search, route focus and browser-back behavior.
+- Approved destinations, shared customer/rider Play URL, honest iOS status,
+  existing legal copy and approved fees.
+- No observed runtime/hydration errors, asset failures, external requests
+  or submissions. External network requests were blocked in the harness.
+
+Manual accessibility review remains necessary. Axe reported incomplete
+color-contrast checks where layered/sticky content obscured its background
+calculation: hero visual label, app preview introduction, rider note and
+mobile menu heading and availability note. These are NOT a blanket accessibility pass.
+Check those states, 200%/400% zoom and assistive technology before release.
+
+Review images were saved under:
+C:\Users\PC\AppData\Local\Temp\pourexpress-website-review
+home-desktop.png, home-mobile.png, app.png, rider.png, pricing.png.
+
+8. DEPENDENCIES AND BUILD SIZE
+-------------------------------
+Targeted compatible security updates only:
+Vite 8.2.2 -> 8.2.4; source-map-js -> 1.2.2;
+brace-expansion -> 5.0.12; zod -> 4.6.7.
+No blanket forced major-version upgrade was performed.
+Final npm audit: zero reported vulnerabilities, including dev dependencies,
+at the time of this check. This is not a permanent security guarantee.
+
+Local runtime used: Node 20.20.2. Vite 8 requires Node ^20.19 or >=22.12;
+confirm an actively supported compatible Node release in CI before release.
+
+Baseline client JavaScript: 385.01 kB / 122.23 kB gzip.
+Current client JavaScript: 284.92 kB / 87.87 kB gzip (~28% less gzip).
+Current CSS: 36.71 kB / 8.64 kB gzip.
+These are build-tool bundle measurements, not real-user Web Vitals.
+
+Lighthouse was ATTEMPTED with a pinned Node-compatible version but its
+download failed with ENOSPC. Windows reported zero free space on C:.
+No Lighthouse scores, LCP/CLS/INP measurements or performance-target pass
+are claimed. Only the disposable Lighthouse registry metadata downloaded
+by this optional check was removed; no existing personal/project file was
+deleted. Free disk space before any further dependency install or build.
+
+9. MAINTENANCE AND REPEATABLE CHECKS
+------------------------------------
+Public URLs/status: src/config/site.js
+Page metadata/manifest: src/config/routes.js
+Merchant copy: src/content/pricing.js
+FAQ content: src/content/faqs.js
+Design tokens and responsive styles: src/index.css
+
+After a clean npm ci:
+npm run lint
+npm test
+npm run build
+npm run test:browser
+npm run preview
+
+Browser tests require installed Chrome (or POUR_SMOKE_CHROME), and Node20
+uses --experimental-websocket via the supplied npm script. They do not
+install a browser or use production APIs. Use the production build before
+running the browser script. See README.md for preview/deployment details.
+
+10. RELEASE GATES / RECOMMENDATIONS
+------------------------------------
+1. Free adequate local/CI disk space; do not continue installations on full C:.
+2. Owner reviews all pages, screenshot redactions and commercial copy. The
+   owner approved PourXpress as the preferred website brand on 29 October;
+   PourExpress remains a recognized alternate name. Production products and
+   app identifiers were not renamed.
+3. Content/legal owner reviews retained Privacy/Terms wording, including
+   historic TipsyTrust/security claims and actual data/deletion practices.
+   Those existing claims were not independently substantiated or rewritten.
+4. Account-deletion instructions remain unpublished until the real existing
+   process is confirmed. publication.accountDeletion remains false.
+5. Manually test merchant URL, public support mailbox, WhatsApp, Play listing
+   and QR on actual Android; iOS must not imply Android installation works.
+6. Test Safari/Firefox, keyboard/screen-reader, zoom and short-height menus.
+   Complete axe's manual contrast review and repeat checks after changes.
+7. Measure representative pages with Lighthouse on an idle machine and real
+   mobile network conditions. Field Web Vitals require post-release data.
+8. Confirm actual static hosting: serve route/index.html for known routes,
+   404.html with HTTP404 for unknown routes, assets without HTML fallback;
+   test refresh/deep links, MIME, slash behavior, canonical and sharing.
+9. Set host-specific security/caching rules after testing: HTTPS, appropriate
+   HTML revalidation, long-lived immutable hashed assets, content/security
+   policy compatible with actual metadata and static assets. No guessed
+   hosting configuration or DNS change has been applied.
+10. Preview/staging must be built with SITE_PREVIEW=1 and access-controlled
+    when needed; rebuild without the flag for approved production release.
+11. Record previous WEBSITE deployment/artifact and rollback procedure.
+    Obtain separate explicit deployment approval; deploy website dist only,
+    then smoke-test URLs/status/indexability. Do not redeploy other products.
+
+11. SCOPE BOUNDARIES
+--------------------
+No new backend support, rider enrollment, merchant billing, forms, waiting
+list, analytics, CMS or public operational API was required. These remain
+separate work, not nonfunctional controls disguised as completed features.
+
+12. SITE-NAME / FAVICON FOLLOW-UP (29 OCTOBER 2026)
+-------------------------------------------------
+The owner explicitly authorized the search-appearance recommendations:
+- Standardize public website labels, titles, descriptions, social metadata,
+  sharing-card text and brand-only policy references to PourXpress.
+- Keep PourExpress as the recognized alternate spelling in structured data.
+- Add a single WebSite node to homepage initial HTML, with canonical URL and
+  a publisher reference to the Organization. Keep client navigation in sync.
+- Replace the miniature poster/truck favicon with a code-native P mark,
+  using forest green, cream and an orange accent. The full truck logo remains
+  unchanged in the website header.
+- Include square 96x96 PNG, editable SVG and 180x180 Apple touch icon at
+  stable public URLs. Existing poster assets remain but are not icon links.
+
+No policy clause, price, domain, Android package, contact destination,
+production app or backend behavior was changed by this follow-up.
+Sites guidance informed consistent page/metadata branding. The simple
+vector favicon was implemented as code, not generated/replaced by AI.
+
+Five new regression tests cover naming, schema, client navigation and icon
+size/vector safety. Local tests now total26. The production client and SSR
+builds succeeded using existing installed tools without npm cache writes,
+despite Windows continuing to report zero free space. Free disk space before
+future installations; the earlier Lighthouse limitation still applies.
+
+After a separately approved website deployment:
+1. Verify https://pourexpress.co.ke/ serves the preferred metadata and the
+   new /images/favicon.png responds with the expected PNG, not HTML.
+2. Use Google Search Console URL Inspection for the homepage, test the
+   live URL, then request indexing. No Search Console action was taken here.
+3. Allow time for Google to recrawl; site-name/icon selection remains
+   Google's decision and is not instant or guaranteed.
+
+Primary references:
+https://developers.google.com/search/docs/appearance/site-names
+https://developers.google.com/search/docs/appearance/favicon-in-search
+
+END OF REPORT

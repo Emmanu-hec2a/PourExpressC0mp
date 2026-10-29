@@ -1,0 +1,140 @@
+POUREXPRESS WEBSITE ASSET PROVENANCE
+===================================
+Date: 29 October 2026
+Project: C:\Users\PC\Desktop\PourExpress
+All paths below beginning public/ are inside this project.
+
+1. OWNER-SUPPLIED APP PREVIEWS
+------------------------------
+Input C:\Users\PC\Downloads\image131.jpeg -> public/images/customer-home.jpg
+Input C:\Users\PC\Downloads\image1.jpeg -> public/images/customer-stores.jpg
+Optimized with System.Drawing, 678px width, JPEG quality83.
+No fake replacement app interface was drawn.
+
+Input C:\Users\PC\Downloads\image1.png -> built-in image edit ->
+public/images/rider-navigation-redacted.jpg
+Input C:\Users\PC\Downloads\image121.png -> built-in image edit ->
+public/images/customer-tracking-redacted.jpg
+
+The owner explicitly requested transaction and route redaction. The last
+two files are privacy-edited derivatives, not unchanged screenshots.
+Maps, geographic labels/routes, identifiers and payment amounts are covered.
+Only the final redacted derivatives are public; never publish the two private
+source files or an unredacted intermediate. App preview captions disclose
+redaction and clarify that example content is not live website inventory.
+
+Built-in tool mode was used; no CLI/API fallback or API key was used.
+Generated lossless edit outputs before optimization:
+C:\Users\PC\.codex\generated_images\01a15067-5e6c-75f0-bbb7-14bbc9ae3fec\exec-8a1153ae-ebdc-4a19-a27b-fc33562f5cd5.png
+C:\Users\PC\.codex\generated_images\01a15067-5e6c-75f0-bbb7-14bbc9ae3fec\exec-4cb383c0-5725-4bea-92a0-c9871bc98337.png
+
+Prompt specifications used (normalized for handover; not a verbatim log):
+
+RIDER PRIVACY EDIT
+Use case: precise-object-edit. Edit target: owner-supplied image1.png.
+Privacy-redaction only. Preserve the portrait composition, green background,
+headings, phone frame and remaining app UI. Replace the entire map, including
+roads, place names, provider/location labels, pins, routes, store name and
+order chip with an opaque dark-green panel, a neutral map-pin symbol and only
+the text "Route details hidden". Completely cover order references, pickup
+store and address details with opaque bars. Keep navigation header, online
+indicator, SOS and bottom navigation. No original private data should remain
+recoverable; no invented features, branding or watermark.
+
+TRACKING PRIVACY EDIT
+Use case: precise-object-edit. Edit target: owner-supplied image121.png.
+Preserve phone, green background, bottom headings and delivery milestones.
+Replace the complete map, all place names, labels, pins and locations with
+an opaque dark-green panel, a neutral pin and "Location details hidden".
+Replace the numbered order heading with "Track your order". Completely
+obscure the order reference and payment total using opaque bars or "Order
+details hidden". Keep payment/status labels and milestones; do not retain
+identifiers, amounts or geography. Do not redesign or invent app features.
+
+Images were visually checked after generation and local optimization.
+Owner approval of the final redactions is still required before publication.
+For future redactions, edit a sibling file, inspect it, and then explicitly
+update media references; do not overwrite the only approved source.
+
+2. ILLUSTRATIVE EDITORIAL ASSET
+--------------------------------
+Saved final: public/images/brand-editorial.jpg
+Generated source:
+C:\Users\PC\.codex\generated_images\01a15067-5e6c-75f0-bbb7-14bbc9ae3fec\exec-1b5da285-2668-4d52-9725-3f381522e9cd.png
+Mode: built-in image generation, no CLI/API fallback.
+Optimized to1200px width/JPEG83.
+Usage: About page only, explicitly captioned as an illustrative brand image,
+not a product listing. It must not be represented as real stock or a genuine
+merchant/product photograph.
+
+Prompt:
+Use case: ads-marketing. Asset type: decorative editorial hero illustration
+for PourExpress, a Kenyan adult drinks delivery brand. Create a refined
+photorealistic studio still-life, horizontal 3:2 composition, of a matte
+forest-green reusable delivery tote with two elegant unbranded dark
+green/amber glass beverage bottles emerging, one small orange color accent
+on the tote handle, a clear short glass with ice on a warm cream plinth,
+a tiny natural citrus accent. Soft warm side light and tactile paper/fabric
+textures, premium restrained art direction, background warm off-white
+#F4F3ED with one curved deep forest-green architectural backdrop, realistic
+shadows. Center-right balanced composition with generous breathing room,
+objects fully within frame. Palette forest green #0D3B30, warm white,
+accent orange #F97316. No people, no actual alcoholic brand trademarks,
+no labels, no text, no logo, no watermarks, no phone, no app interfaces,
+no ratings, no delivery promises. Illustrative brand imagery, not actual
+product catalog or merchant photo.
+
+3. EXISTING BRAND AND CODE-NATIVE ASSETS
+----------------------------------------
+public/images/brand-logo.png: cropped/resized existing src/assets/logo.png;
+not AI-generated and not a new logo system.
+public/images/brand-mark.svg: editable code-native small-size P mark with a
+forest-green background and orange accent. Approved website-only favicon
+improvement on 29 October; not a replacement for the main truck logo.
+public/images/favicon.png: 96x96 companion to this vector, not a poster crop.
+public/images/apple-touch-icon.png: 180x180 companion to the same vector.
+scripts/prepare-brand-assets.ps1 regenerates both PNGs with System.Drawing
+from the same path geometry and refreshes the existing sharing card.
+No image-generation tool was needed for these code-native brand assets.
+public/images/social-card.png: local typography/shapes using System.Drawing;
+not a fabricated screenshot. Updated to PourXpress with owner approval;
+says Android available / App Store coming soon.
+public/images/android-download-qr.svg: generated offline by qrcode1.5.4 from
+the exact approved Google Play URL; no tracking redirect.
+Regenerate QR with: node scripts/generate-qr.mjs
+
+public/images/google-play-badge.png: official badge, unmodified.
+Source:
+https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png
+Stored locally; no dependency on that remote URL at page load.
+
+Existing lucide-react icons remain code-native SVG; they were not replaced
+with generated images. No new externally hosted fonts/images/tracking were
+added. Build output may retain original starter public assets, but they are
+not new public-facing content or dependencies.
+
+4. FINAL PROJECT ASSETS / APPROXIMATE SIZE
+------------------------------------------
+customer-home.jpg: 79,805 bytes
+customer-stores.jpg: 64,293 bytes
+customer-tracking-redacted.jpg: 76,640 bytes
+rider-navigation-redacted.jpg: 75,977 bytes
+brand-editorial.jpg: 101,345 bytes
+brand-logo.png: 38,179 bytes
+brand-mark.svg: 386 bytes
+favicon.png: 2,962 bytes
+apple-touch-icon.png: 5,308 bytes
+social-card.png: 20,865 bytes
+google-play-badge.png: 4,904 bytes
+android-download-qr.svg: 2,552 bytes
+
+Regeneration entry point: scripts/prepare-assets.ps1.
+It expects already-redacted rider/tracking inputs and performs optimization,
+logo derivatives and sharing-card preparation. It does NOT redact data and
+is not run automatically in CI; approved output files are already present.
+
+The application references only project-local public assets; no generated
+project dependency is left solely under the default .codex output directory.
+Original private downloads and unrelated user files were not removed.
+
+END OF ASSET NOTES

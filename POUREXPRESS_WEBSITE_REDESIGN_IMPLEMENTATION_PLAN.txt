@@ -1,0 +1,998 @@
+POUREXPRESS PUBLIC WEBSITE REDESIGN
+DETAILED IMPLEMENTATION AND RELEASE PLAN
+======================================================================
+
+Prepared: 28 October 2026
+Timezone: Africa/Nairobi
+Target repository: C:\Users\PC\Desktop\PourExpress
+Document status: Planning only; website implementation is not started.
+
+1. EXECUTIVE DIRECTION
+----------------------------------------------------------------------
+
+Evolve the public website into a polished, customer-first product website
+with dedicated journeys for customers, merchants, and riders. Keep forest
+green and orange as the brand anchors. Use clear messaging, real product
+evidence, accessible interactions, fast pages, and accurate business facts.
+
+Primary conversion: open the published customer app's Google Play listing.
+Secondary conversions: merchant onboarding and rider onboarding through
+existing, approved destinations. Supporting purpose: company credibility,
+responsible-delivery information, and discoverable customer assistance.
+
+Success does not mean copying another company's appearance, adding many
+pages without useful content, or creating a second commerce application.
+Each new page must answer an audience's questions and offer a real action.
+
+2. CONFIRMED FACTS AND ASSUMPTIONS
+----------------------------------------------------------------------
+
+Confirmed by the owner in this conversation:
+- The Android customer app is published on Google Play.
+- Its package name is com.pourexpress.sip.
+- Its listing URL will be:
+  https://play.google.com/store/apps/details?id=com.pourexpress.sip
+- The App Store release is coming soon. No public iOS listing or release
+  date has been supplied.
+- The customer app, rider app, and merchant dashboard already operate in
+  production. Website work must not alter those applications or the
+  backend engine.
+
+Planning assumptions, to confirm before publication:
+- The public homepage should prioritize customer app acquisition.
+- The public brand remains "PourExpress", as currently displayed by this
+  website. Confirm cross-product spelling before changing brand assets;
+  do not rename existing production applications or domains implicitly.
+- https://pourexpress.co.ke remains the canonical public origin.
+- English is the initial website language. Swahili is a later option,
+  requiring reviewed translations and a separate localization scope.
+
+Verification boundary:
+- The repository was inspected read-only. Its initial git status was clean.
+- The Google Play page could not be fetched by the browsing tool. Release
+  availability above is owner-confirmed, not an independently measured
+  store-availability finding.
+- Google's official package-name listing URL format was checked [S1].
+- Manually validate the listing on an Android device and desktop browser
+  in the intended market before release. A tool fetch failure is not
+  evidence that the owner's published application is unavailable.
+- No live performance, accessibility conformance, install attribution,
+  hosting configuration, or legal-compliance audit has been completed.
+
+3. NON-NEGOTIABLE PRODUCTION SAFETY BOUNDARY
+----------------------------------------------------------------------
+
+This plan authorizes no deployment and implements no code changes.
+When implementation is approved, the default writable scope should be
+only the PourExpress website repository and its isolated preview build.
+
+Do not modify:
+- Urbanfoods customer, rider, merchant, or shared backend code.
+- Authentication, permissions, payments, dispatch, billing, or webhooks.
+- Database schemas, migrations, production records, or background jobs.
+- Mobile version enforcement, update URLs, or release configuration.
+- Merchant application routes, support-ticket handlers, or account flows.
+- PourSADMIN, its APIs, or its administrative security controls.
+- Existing DNS, email sending, app links, or unrelated hosting projects.
+
+First-release website behavior:
+- Public content, accessible navigation, real external links, and app
+  download guidance only.
+- No customer web checkout, login, wallet, ticket submission, merchant
+  application processing, or rider account creation inside this website.
+- No public requests to authenticated Super Admin endpoints.
+- No embedded administrator credentials, tokens, customer data, or logs.
+- No new enquiry form, mailing list, or iOS waitlist without separately
+  approved handling, privacy copy, spam protection, and an actual endpoint.
+
+If implementation needs changes outside this boundary, stop that part,
+describe the exact dependency, and obtain explicit approval. Continue
+independent website-only tasks where possible.
+
+4. CURRENT-STATE FINDINGS AND REQUIRED RESPONSES
+----------------------------------------------------------------------
+
+F01 - Audience mismatch. src/App.jsx:149 onward.
+The hero leads with "Operating System for Liquor Commerce" and sends its
+primary CTA to merchant onboarding. The customer download journey is not
+prominent.
+Response: introduce a customer-first hero and dedicated audience pages.
+
+F02 - Outdated application availability. src/App.jsx:582 onward.
+The footer labels Customer App "5 Days to Launch" and Rider App "Alpha
+Testing". Those statements are stale relative to the owner's production
+context.
+Response: customer Android available now; customer iOS coming soon. Treat
+the rider app as an existing product, but obtain its separate approved
+distribution/onboarding destination before displaying a download link.
+Never reuse the customer package name for the rider app.
+
+F03 - Pricing and terms disagree. src/App.jsx:443 and :669 onward.
+Pricing lists commissions, while Terms describes zero commission and
+100% retained revenue.
+Response: obtain an approved commercial source and legal/content review.
+Publish consistent website wording without changing the billing engine.
+
+F04 - Precise claims lack evidence in this review. src/App.jsx:217-392.
+Examples include sub-30-minute delivery, 0.5m GPS accuracy, two-second
+location pings, "bank-grade" security, and broad compliance assurances.
+Response: maintain an evidence register. Remove, qualify, or hold claims
+until an accountable owner approves supporting evidence.
+
+F05 - Mixed brand/contact destinations. src/App.jsx:78, :502, :538-541.
+The site links to merchants.tipsytheoryy.com, older support domains, a
+personal Gmail address, and the founder's personal portfolio.
+Response: verify existing destinations and agree a public contact map.
+Do not assume the old merchant domain is broken or replace it with a
+guessed domain. Move founder detail to About with permission.
+
+F06 - Product proof is weak.
+Stock photographs and an illustrative animated route dominate sections.
+Response: prioritize approved app screenshots and genuine product stories.
+Do not present an illustrative route, counter, or map as live operations.
+
+F07 - Monolithic structure.
+Most content and the four existing routes live in approximately 700 lines
+of src/App.jsx. src/App.css still contains starter-template styling.
+Response: split layout, pages, content, and shared components. Remove
+unused starter code only after checking imports and preserving behavior.
+
+F08 - Per-page discoverability needs improvement.
+index.html supplies homepage metadata and a homepage canonical. The route
+components do not currently supply distinct metadata. There is no
+catch-all route in the inspected route list.
+Response: introduce page-specific initial HTML/metadata and a real 404
+strategy. Preserve the existing public URLs and legal links.
+
+F09 - Interaction/accessibility gaps visible in source.
+Mobile menu buttons lack explicit accessible names and expanded state.
+The CSS reduced-motion rule changes smooth scrolling, but the inspected
+Framer Motion animations are not comprehensively reduced.
+Response: implement and test accessible navigation, motion preferences,
+contrast, focus visibility, and semantic page structure.
+
+F10 - Typography and media need an asset audit.
+The CSS names Inter but the inspected source does not explicitly load it.
+Several local raster assets and external stock images need relevance,
+licensing, dimension, and file-weight review.
+Response: choose a deliberate system stack or properly licensed/self-
+hosted font; create an optimized, approved asset inventory.
+
+5. INFORMATION ARCHITECTURE AND PUBLIC ROUTES
+----------------------------------------------------------------------
+
+Top navigation:
+Customers | Merchants | Riders | Help | About | Get the app
+
+The primary "Get the app" navigation action opens /app so visitors can
+see Android availability and the honest iOS status. Explicit Google Play
+buttons on pages go directly to the published listing.
+
+Planned routes and purposes:
+
+/                         Customer-first homepage and audience signposts.
+/app                      Customer app, Android download, iOS status.
+/merchants                Merchant benefits and approved onboarding CTA.
+/merchants/pricing        Accurate commercial information, after approval.
+/riders                   Rider information and approved joining route.
+/help                     Useful FAQs and existing support channels.
+/about                    Company story, team/founder, verified facts.
+/contact                  Clear approved contact options by enquiry type.
+/responsible-delivery     Approved age/ID and responsible-delivery guidance.
+/privacy                  Preserve URL; publish reviewed policy content.
+/terms                    Preserve URL; align approved commercial wording.
+/account-deletion         Verified existing deletion instructions only.
+Unrecognized paths        Useful not-found page with real 404 handling.
+
+Publication gates:
+- Do not ship an empty route or a dead navigation item to satisfy this list.
+- Pricing needs approved amounts, commissions, inclusions, and conditions.
+- Account deletion needs a verified existing flow and approved instructions.
+- Responsible-delivery and policy changes need accountable content review.
+- If a gated page is not ready, keep it out of navigation and the sitemap.
+  Do not invent a process or remove an existing policy to hide a blocker.
+
+Preserve existing URLs /, /about, /privacy, and /terms.
+Preserve useful compatibility for /#how-it-works, /#features, and /#pricing:
+retain relevant anchor targets or provide a deliberate client-side mapping
+to the new destination. URL fragments are not visible to the web server.
+
+6. PAGE-BY-PAGE CONTENT AND UX SPECIFICATION
+----------------------------------------------------------------------
+
+6.1 Home
+Purpose: explain the service quickly and lead adults to the customer app.
+
+Proposed sequence:
+A. Header with accessible desktop/mobile navigation.
+B. Hero with one clear headline, short description, actual app visual,
+   Google Play download action, and a visible iOS coming-soon statement.
+C. Simple how-it-works: discover a store, place/pay for an order, follow
+   delivery. Confirm the depicted steps against the released application.
+D. Three to four evidenced app benefits with cropped, legible screenshots.
+E. Trust and responsible-delivery explanation with links to fuller guidance.
+F. Merchant and rider signposts, each with its own destination.
+G. Short, useful FAQ section.
+H. Final download block and full footer.
+
+Draft hero direction, subject to approval:
+"Your favourite drinks. From local stores. Delivered."
+"Discover nearby stores, pay with M-PESA, and follow your order in the
+PourExpress app. Available on Android. iOS coming soon."
+
+Do not imply nationwide availability, guaranteed delivery times, or live
+store coverage without verified operational evidence.
+Do not put merchant subscription pricing above the customer journey.
+
+6.2 Customer app (/app)
+- Show actual customer app screens, not an invented prototype UI.
+- Explain only confirmed, released features in simple language.
+- Primary CTA: Get it on Google Play, using the exact approved listing.
+- Secondary status: "App Store - Coming soon" as plain informative text.
+- Provide a desktop QR code encoding the same HTTPS Google Play URL.
+- Explain where to find help and what to expect at delivery using approved
+  content. Mention Shiriki/loyalty/wallet features only after public-feature
+  confirmation and screenshot approval; backend existence is insufficient.
+- Include customer questions about Android availability and iOS status.
+
+6.3 Merchants (/merchants)
+- Lead with business outcomes: reach customers and manage existing store
+  operations, using benefits that the current dashboard actually supports.
+- Explain the existing application/approval process accurately.
+- Include dashboard screenshots with all sensitive information removed.
+- Separate "Become a partner" from "Merchant sign in" if the existing
+  application supports separate destinations; verify both URLs.
+- Link to merchant pricing rather than duplicating prices in many places.
+- Cover licensing/onboarding requirements using reviewed business copy.
+- No new application form or new onboarding workflow in this release.
+
+6.4 Merchant pricing (/merchants/pricing)
+- Use one approved content source for every plan amount and commission.
+- Show KES, the billing period, commission wording, included features,
+  applicable conditions, and contact-sales handling clearly.
+- Confirm whether trials, taxes, enterprise terms, and limits apply.
+- Do not copy the current Free/Base/Pro/Enterprise figures as verified truth.
+- Remove "Most Popular" unless there is evidence for that label.
+- Do not advertise SMS, POS/API integrations, 24/7 support, or multi-branch
+  capabilities as available solely because the old marketing copy lists them.
+- Require agreement between pricing, FAQs, Terms, and approved commercial
+  documents. This page never updates production subscription settings.
+
+6.5 Riders (/riders)
+- Explain the role, real joining requirements, safety expectations, support
+  channels, and the approved existing onboarding path.
+- Remove stale alpha-testing language after owner review.
+- Request the rider app's own package/distribution URL; do not substitute
+  com.pourexpress.sip or assume the customer iOS timeline applies to riders.
+- Do not promise income, available jobs, guaranteed work, equipment, or
+  payout timing without approved operational evidence.
+- If no public joining/download URL is approved, use an existing verified
+  rider contact channel with a truthful label. No fake application success.
+
+6.6 Help (/help)
+- Organize FAQs into ordering, M-PESA/payments, delivery, accounts, app
+  availability, merchants, and riders as supported by approved content.
+- Use accessible disclosure controls; native details/summary is suitable
+  for straightforward FAQs.
+- For a small content set, do not show a non-functional search input.
+  Add local search only if it actually filters the published FAQ content.
+- Explain how existing customers obtain order-specific assistance in the
+  current app or approved support channel.
+- Never request passwords, TOTP codes, payment PINs, or public ID uploads.
+- No new unauthenticated ticket-creation API or inbox integration.
+
+6.7 About and Contact
+- About: concise company purpose, approved founder story, genuine people
+  imagery if available, and verified company facts.
+- Move personal portfolio links away from primary conversion sections.
+- Contact: approved email, phone/WhatsApp, and enquiry routing, with honest
+  operating hours where confirmed.
+- Confirm permission to publish contact details. Do not assume the admin
+  invitation sender is an appropriate customer support address.
+- An email link must say it opens email; a WhatsApp link must say WhatsApp.
+  Neither should pretend to be a submitted or tracked support ticket.
+
+6.8 Responsible delivery and policy pages
+- Explain the actual age/ID and delivery process using approved language.
+- Do not market behavioral checks or an age confirmation popup as proof
+  of compliance or a replacement for the production verification process.
+- Avoid imagery/copy aimed at minors or encouraging harmful consumption.
+- Preserve existing policy URLs and coordinate policy edits with the
+  business/legal owner; this plan is not a legal opinion or certification.
+- Reflect actual data collection and third-party services if analytics or
+  contact tools are later introduced.
+- Account-deletion instructions must point to a working existing process.
+  Do not collect deletion requests through an unimplemented website form.
+
+6.9 Not-found experience
+- Explain that the page was not found and link to Home, Get the app, Help.
+- Make missing URLs return HTTP 404 at the host, not merely display a
+  not-found component inside a universal HTTP-200 SPA fallback.
+- Missing assets must remain 404 responses, not receive homepage HTML.
+
+7. APP DISTRIBUTION: SINGLE SOURCE OF TRUTH
+----------------------------------------------------------------------
+
+Create a shared configuration module, for example src/config/site.js.
+Every badge, download CTA, QR code, footer item, and availability sentence
+must read from the same application distribution/content definitions.
+
+Initial customer app configuration:
+
+android.status       = available
+android.packageName  = com.pourexpress.sip
+android.storeUrl     = https://play.google.com/store/apps/details?id=com.pourexpress.sip
+ios.status           = coming_soon
+ios.storeUrl         = null
+ios.releaseDate      = null
+
+Required behavior:
+- Android: functional HTTPS listing link on Android, iOS, and desktop.
+- Desktop: visible download link plus optional locally generated QR code.
+- iOS: visible "Coming soon" information, without a fake active download
+  badge, placeholder App Store ID, countdown, release date, or waitlist.
+- Prefer straightforward links; no automatic browser redirects, forced
+  app opening, device fingerprinting, or dependence on user-agent detection.
+- No APK sideloading link, install permission request, or new deep-link/
+  intent/associated-domain configuration as part of this website refresh.
+- Use official Google Play badge assets and follow current branding
+  guidance [S2]; do not redraw or recolor the official badge as a brand CTA.
+- A custom orange website button may use a clear text label separately.
+- A QR code must have an equivalent usable text link and a clear Android
+  download label. Do not send readers to an undocumented redirect service.
+- Never scrape app ratings, install counts, or reviews at runtime.
+- Never reuse the customer download configuration for rider distribution.
+
+Future iOS activation gate:
+1. Owner supplies the verified, public customer App Store listing.
+2. Confirm the listing belongs to the correct published application.
+3. Update the shared configuration and approved badge asset once.
+4. Test every download surface, QR/FAQ wording, and structured metadata.
+5. Publish through the website's normal reviewed release; do not modify
+   the mobile backend's version controls to change a website badge.
+
+8. VISUAL DESIGN SYSTEM
+----------------------------------------------------------------------
+
+Visual direction: premium, approachable Kenyan local commerce.
+
+Proposed color roles:
+- Forest green #0D3B30: brand anchor, hero/footer, selected emphasis.
+- Deep green #082925: supporting dark surfaces.
+- Warm neutral #F7F8F5: readable content backgrounds.
+- White: cards and product presentation where appropriate.
+- Orange #F97316: brand accent and selected emphasis.
+- A tested deeper orange, e.g. #C2410C, for white-label action buttons
+  where required for contrast. Verify actual foreground/background pairs;
+  do not assume white text on bright orange is accessible.
+- Dark forest/slate for primary text, with readable secondary text.
+
+Typography:
+- Choose a licensed/self-hosted Inter family or an explicit system stack.
+- Define a consistent display, heading, body, label, and caption scale.
+- Use fluid headings with limits that work at 320px and on wide screens.
+- Keep normal body content approximately 16-18px with generous line height.
+- Constrain long-form reading width to approximately 65-75 characters.
+
+Layout and component rules:
+- Use an 8px-oriented spacing scale with smaller adjustments where useful.
+- Keep content containers consistent, roughly 1120-1280px at desktop.
+- Use restrained 12-20px control/card radii; reserve larger shapes for
+  deliberate hero/product compositions.
+- Provide default, hover, focus, pressed, and relevant disabled states.
+- One visually dominant CTA per section; label secondary actions clearly.
+- Default to a readable light content area with branded green sections.
+  A marketing-site theme switcher is not required for the first release.
+- Avoid excessive glass effects, low-opacity body text, pulsing dots,
+  large decorative empty panels, and repeated oversized cards.
+
+Motion and images:
+- Replace the rotating stock-photo hero with one strong product composition.
+- Use approved app screens with sensitive data removed.
+- Animate only when it helps explain content; prefer short transitions.
+- Honor reduced motion in both CSS and Framer Motion; remove continuous
+  decorative route loops and automatic slides in the reduced-motion mode.
+- Essential information must remain visible if animation or JS fails.
+- No autoplay audio or large autoplay video in the first release.
+
+9. COMPONENT AND SOURCE ORGANIZATION
+----------------------------------------------------------------------
+
+Retain the present React/Vite/React Router/Tailwind foundation unless a
+specific, approved rendering requirement proves incompatible. No automatic
+framework migration, TypeScript migration, or broad dependency upgrade.
+
+Suggested source structure (adapt names to the final implementation):
+
+src/
+  App.jsx                     Route composition, minimal application glue.
+  main.jsx                    Existing client entry, adapted if needed.
+  index.css                   Brand tokens, base styles, shared primitives.
+  config/
+    site.js                   Approved URLs, app status, public contacts.
+  content/
+    navigation.js             Header/footer links and audience labels.
+    pages.js                  Approved page copy and content definitions.
+    pricing.js                Approved commercial copy, not billing config.
+    faqs.js                   Reviewed audience-specific FAQs.
+  components/
+    layout/
+      SiteLayout.jsx          Shared header, main, footer, route focus.
+      SiteHeader.jsx          Desktop and mobile navigation.
+      MobileNavigation.jsx    Accessible mobile dialog/drawer.
+      SiteFooter.jsx          Grouped links, app status, contacts.
+    ui/
+      ButtonLink.jsx          Anchor semantics for navigation actions.
+      SectionHeading.jsx      Consistent heading/intro presentation.
+      AppDownloadBlock.jsx    Shared Play link and honest iOS status.
+      ProductShowcase.jsx     Actual screenshot presentation.
+      FAQList.jsx             Accessible question/answer disclosures.
+      ResponsiveImage.jsx     Dimensions, srcset, loading behavior.
+  pages/
+    HomePage.jsx
+    AppPage.jsx
+    MerchantsPage.jsx
+    MerchantPricingPage.jsx
+    RidersPage.jsx
+    HelpPage.jsx
+    AboutPage.jsx
+    ContactPage.jsx
+    ResponsibleDeliveryPage.jsx
+    PrivacyPage.jsx
+    TermsPage.jsx
+    AccountDeletionPage.jsx
+    NotFoundPage.jsx
+  assets/
+    brand/                    Approved optimized logo variants.
+    screenshots/              Redacted and optimized actual app screens.
+    photography/              Licensed, relevant brand photography.
+
+Additional planned files:
+- A route/metadata manifest shared by rendering, tests, and sitemap output.
+- A build-time rendering adapter or script, selected after a compatibility
+  spike; do not select a package without checking the locked toolchain.
+- Browser smoke/regression tests and a documented release checklist.
+- Host-specific route/header files only after confirming the actual host.
+
+Do not create every suggested abstraction if a simpler component handles
+the actual content. Keep repeated facts centralized and page code readable.
+
+10. RENDERING, SEO, AND HOSTING STRATEGY
+----------------------------------------------------------------------
+
+Recommended outcome: pre-rendered/static HTML for the public marketing
+routes, with React enhancing navigation and interactions. Retain the stack
+where practical and prove the approach with a small rendering spike first.
+
+Why:
+- Route content, titles, descriptions, and sharing metadata should exist
+  in the initial HTML, including for clients that do not execute JS.
+- Google's guidance recommends unique page metadata and consistent
+  canonicals; it also discusses the benefits of pre-rendering [S3].
+
+Implementation requirements:
+- One approved route manifest drives titles, descriptions, canonical URLs,
+  published routes, sitemap entries, and static rendering output.
+- Every indexable page has its own correct initial title and description.
+- Exactly one canonical per page; do not ship homepage canonicals on all
+  routes and replace them with conflicting values only after rendering.
+- Add relevant Open Graph metadata and a real sharing image.
+- Keep structured data factual. Use Organization and appropriate page/
+  breadcrumb data as applicable; do not fabricate review/rating schema,
+  locations, coverage, prices, or availability.
+- No iOS store URL in metadata while iOS is coming soon.
+- Do not add thin location pages for service areas that are unverified.
+- Update sitemap.xml only with published, canonical routes. lastmod should
+  reflect real content changes; a sitemap is not a ranking guarantee.
+- Ensure robots.txt references the correct production sitemap.
+- Preview builds should be access-restricted where possible and noindex;
+  robots.txt alone is not access control. Do not carry preview noindex into
+  the production release.
+- Test direct loads, refresh, browser back/forward, trailing-slash policy,
+  old anchors, unknown paths, and missing assets against the actual host.
+- Add permanent redirects only for genuinely moved URLs after approval.
+
+Host discovery gate:
+- Identify hosting provider, current build command, deploy root, runtime
+  requirements, cache behavior, routing rules, and rollback mechanism.
+- Do not assume this site uses the same hosting project or Node version
+  as PourSADMIN.
+- Derive Node requirements from the locked dependencies/host, document
+  them, and test the existing package-lock.json before changing toolchains.
+- If correct static routes/status codes require host configuration, scope
+  that change only to this website and obtain deployment approval.
+
+11. ACCESSIBILITY AND RESPONSIVE REQUIREMENTS
+----------------------------------------------------------------------
+
+Target WCAG 2.2 AA, verified with automated and manual checks [S4]. A target
+is not a claim of achieved conformance.
+
+Core checks:
+- Semantic header, nav, main, footer; a useful skip-to-content link.
+- Descriptive page heading and a logical heading hierarchy.
+- Accessible names, visible keyboard focus, and no keyboard traps.
+- Text contrast at least 4.5:1 for normal text and 3:1 for large text;
+  test relevant non-text contrast and avoid color-only meaning.
+- Meaningful image alternatives and decorative-image handling.
+- Product touch-target goal of at least 44x44px for primary controls.
+- Mobile menu announces expanded state, supports Escape, manages focus,
+  and restores focus to its opener after closing.
+- Fixed/sticky navigation never hides focused controls or anchor headings.
+- Route changes update document context and move focus appropriately;
+  back/forward navigation preserves sensible scroll behavior.
+- Reduced motion, text enlargement, and narrow-screen reflow work.
+
+Test at 320, 375, 390, 768, 1024, 1440, and 1920px widths.
+Include short mobile landscape heights, 200% text enlargement, 400%
+browser zoom/reflow, keyboard-only use, and a screen-reader spot check.
+Test Chrome/Android, Safari/iPhone, desktop Chrome/Edge, and Firefox where
+available. Android download must work through an iPhone browser too;
+the website must not imply that an Android package installs on iOS.
+
+12. PERFORMANCE AND ASSET BUDGETS
+----------------------------------------------------------------------
+
+Record a baseline first; no current performance scores are asserted.
+
+Field targets, where sufficient real traffic is available:
+- LCP <= 2.5 seconds.
+- INP <= 200 milliseconds.
+- CLS <= 0.1.
+- Evaluate the 75th percentile, separated by device class [S5].
+
+Laboratory release checks:
+- Use repeatable mobile test settings and take the median of three runs.
+- Aim for Lighthouse performance >= 90 on key public pages as a project
+  target; investigate regressions rather than treating a score as proof
+  of field performance or a guaranteed outcome.
+- Keep critical content visible without waiting for motion effects.
+- Provisional initial-page budgets: transferred JS <= 200KB gzip, critical
+  hero imagery <= 250KB, and approximately <= 1MB total initial transfer.
+  Confirm feasibility against baseline; document any reviewed exceptions.
+- INP is a field interaction metric. Lab responsiveness checks supplement
+  it; do not claim a lab Lighthouse result proves a field INP pass.
+
+Implementation tasks:
+- Optimize actual screenshots and photography as responsive WebP/AVIF
+  where supported, with appropriate fallbacks.
+- Include intrinsic dimensions/aspect ratios to prevent layout jumps.
+- Do not lazy-load the actual LCP/hero image; lazy-load below-fold images.
+- Serve stable local brand assets rather than a live stock-image slideshow.
+- Avoid loading multiple full-size hero images on first visit.
+- Use efficient logo/favicon/social-image variants for their actual roles.
+- Limit font families/weights, verify licensing, and use font-display swap.
+- Split page-specific code where useful; remove unused imports/assets only
+  after checking their use and preserving user-owned work.
+- Inspect cache headers, compression, and cache-busted assets on the host.
+
+13. CONTENT, TRUST, AND APPROVAL REGISTER
+----------------------------------------------------------------------
+
+Create a review checklist with a named owner and approval status for:
+- Public brand spelling, logo, product names, and company identity.
+- Android listing and current app screenshots.
+- Separate rider app/onboarding destination and availability wording.
+- Merchant onboarding and sign-in URLs.
+- Public email, phone, WhatsApp, and genuine operating hours.
+- Merchant prices, commissions, trial conditions, features, and limitations.
+- Geographic availability and any delivery-time statements.
+- Responsible-delivery/age/ID process wording.
+- Privacy, terms, deletion instructions, and any retention/process promises.
+- Evidence/consent for testimonials, partner logos, people, and photographs.
+- Evidence for any ratings, customer counts, reliability, security, or
+  service-quality claims.
+
+Rules:
+- No invented testimonials, ratings, merchant counts, install counts,
+  delivery guarantees, launch dates, income projections, or certifications.
+- Use real public screenshots, or redacted screenshots with explicit owner
+  permission. Do not create mock screens that imply unreleased features.
+- Never include real customer names, phone numbers, IDs, order details,
+  financial information, support messages, or map traces without a valid
+  approved publication basis and necessary redaction.
+- Maintain factual consistency across website copy and the live app.
+- If a feature is not verified as public, leave it out of the first release.
+
+14. ANALYTICS, PRIVACY, AND SECURITY
+----------------------------------------------------------------------
+
+No tracking vendor is selected or installed by this plan.
+
+Optional, separately approved measurement:
+- Customer Google Play outbound clicks, segmented by CTA placement.
+- Merchant onboarding/sign-in clicks.
+- Rider onboarding/contact clicks.
+- Help/contact interactions and page-level engagement.
+- Use an analytics adapter that can remain disabled without breaking links.
+
+Measurement limits:
+- An outbound Play click is not a confirmed installation or registration.
+- Do not promise install attribution without a separately approved, working
+  store/app attribution arrangement.
+- Do not log email addresses, phone numbers, message text, order IDs,
+  payment identifiers, exact locations, or authentication details.
+- Avoid session replay/fingerprinting. Any analytics consent and privacy
+  requirements need applicable-policy review before collection begins.
+- Do not append unapproved tracking parameters or redirect chains to the
+  initially supplied Google Play URL.
+
+Website hardening:
+- Escape normal content; avoid raw HTML injection and untrusted embeds.
+- Use safe, deliberate external links and appropriate rel attributes when
+  opening new tabs. Prefer ordinary same-tab navigation for internal pages.
+- No secrets or production API keys in source, static files, or build env.
+- Review host security headers/CSP against actual assets and services;
+  preview-test changes rather than copying an untested restrictive policy.
+- Keep dependencies locked; review vulnerabilities and tooling compatibility
+  before narrowly scoped updates. Do not perform blanket auto-fixes.
+- A failed optional analytics call must never block app downloads or help.
+
+15. IMPLEMENTATION PHASES, DELIVERABLES, AND EXIT GATES
+----------------------------------------------------------------------
+
+P0 - Baseline and content decisions. Estimate: 0.5-1 working day.
+Tasks:
+1. Record git state, deployment settings, current URLs, runtime, and build.
+2. Inventory all CTAs, claims, assets, public contacts, and old anchors.
+3. Capture desktop/mobile baseline screenshots and performance results.
+4. Obtain or flag the content approvals from section 13.
+5. Verify the actual Google Play listing manually on target devices.
+Deliverable: baseline, approved URL/content matrix, unresolved-input list.
+Exit gate: Android status is wired as owner-confirmed; no guessed iOS or
+rider links; safety boundary and release scope are explicitly understood.
+
+P1 - Design and content blueprint. Estimate: 1.5-2 working days.
+Tasks:
+1. Finalize sitemap, navigation, homepage hierarchy, and audience CTAs.
+2. Draft page copy and replace unsupported technical/launch claims.
+3. Define tokens, type, buttons, image treatments, spacing, and states.
+4. Produce desktop/mobile layouts for Home, App, and Merchants first.
+5. Review screenshots, public brand, contact information, and pricing.
+Deliverable: approved page/design blueprint and content checklist.
+Exit gate: clear customer-first hierarchy and consistent Android/iOS state.
+
+P2 - Structure, rendering, and shared shell. Estimate: 1-2 working days.
+Tasks:
+1. Extract shared config, content, layout, header/footer, and page routes.
+2. Implement an accessible mobile menu, skip link, and route focus behavior.
+3. Prove static rendering and route-specific initial metadata on two pages.
+4. Confirm direct refresh and real 404 behavior in the target host's preview.
+5. Build AppDownloadBlock and test package/link/state invariants.
+Deliverable: maintainable site shell and proven rendering/deploy approach.
+Exit gate: no host/framework assumptions remain hidden; old public URLs
+work; unavailable iOS actions cannot be rendered as working downloads.
+
+P3 - Customer homepage and app journey. Estimate: 1.5-2 working days.
+Tasks:
+1. Implement Home and /app with approved product imagery and copy.
+2. Add Play CTA placements, desktop QR, honest iOS availability, and FAQs.
+3. Replace stock slideshow/technical claims with relevant product proof.
+4. Verify responsive layout, image loading, keyboard behavior, and contrast.
+Deliverable: complete customer acquisition journey in preview.
+Exit gate: all Play actions target com.pourexpress.sip; no fake availability,
+forced redirection, accidental web checkout, or unsupported feature claims.
+
+P4 - Audience, support, company, and policy pages. Estimate: 2-3 days.
+Tasks:
+1. Implement merchant and rider pages with approved external actions.
+2. Implement Help, About, Contact, and useful 404 content.
+3. Publish approved pricing and responsible-delivery/policy content.
+4. Publish deletion instructions only after verifying the existing process.
+5. Preserve existing policy links and legacy anchor entry points.
+Deliverable: complete approved first-release page set.
+Exit gate: no empty pages, fake forms, unapproved prices, or guessed URLs.
+
+P5 - SEO, accessibility, performance, regression. Estimate: 1.5-2 days.
+Tasks:
+1. Finalize metadata, social images, sitemap, robots, and structured data.
+2. Run automated and manual QA from section 17 against preview.
+3. Compare desktop/mobile output and performance against the baseline.
+4. Resolve critical failures; document any accepted, non-critical gaps.
+Deliverable: test evidence, final build artifact, release checklist.
+Exit gate: section 18 is satisfied; no unresolved production-safety issue.
+
+P6 - Approved rollout and observation. Estimate: 0.5-1 day of active work.
+Tasks:
+1. Obtain explicit production deployment approval.
+2. Record prior deployment and rollback procedure; release the website only.
+3. Verify production routes, Play links, iOS status, policies, and 404s.
+4. Observe 404s, runtime/build errors, link failures, and available real
+   performance data after release, without inventing unavailable metrics.
+Deliverable: handover, release record, verified rollback readiness.
+Exit gate: owner sign-off and documented post-release checks.
+
+Indicative effort: approximately 8.5-13 engineering working days for one
+engineer, excluding delays for content, asset, legal/commercial review,
+hosting access, or deployment approval. This is a planning range, not a
+fixed delivery commitment. Re-estimate after P0/P1.
+
+16. FILE-LEVEL CHANGE PLAN
+----------------------------------------------------------------------
+
+src/App.jsx:
+- Replace the monolithic page/component definitions with route composition.
+- Keep /about, /privacy, and /terms reachable; add the approved new routes.
+- Add explicit catch-all page handling and shared layout composition.
+
+src/main.jsx and vite.config.js:
+- Preserve React initialization and current Vite/Tailwind integration.
+- Make only changes required by the verified rendering/build approach.
+- Keep browser-only APIs out of static-render execution paths.
+
+src/index.css:
+- Consolidate brand tokens, type, spacing, states, and responsive rules.
+- Make readable light surfaces and forest brand sections work together.
+- Add visible focus and comprehensive reduced-motion styling.
+
+src/App.css and starter assets:
+- Verify references first. Remove unused template code only when proven
+  unrelated to the intended site; preserve user-owned assets and changes.
+
+New config/content/components/pages:
+- Implement the structure in section 9 incrementally, avoiding duplicated
+  store URLs, availability labels, pricing, and public contacts.
+
+index.html / generated page HTML:
+- Provide per-route titles, descriptions, canonical and social metadata.
+- Provide accurate brand identity and structured data where appropriate.
+- Do not retain a conflicting global homepage canonical on other pages.
+
+public/sitemap.xml and public/robots.txt:
+- Generate or maintain them from the approved route manifest.
+- Keep unpublished/gated pages out of the production sitemap.
+
+package.json and package-lock.json:
+- Retain the current toolchain unless a specific compatibility issue is
+  demonstrated. Add narrowly scoped testing/rendering scripts if needed.
+- Pin any new dependencies deliberately, explain why, and verify them.
+
+Host configuration:
+- Add only the site-specific route/cache/header changes proven necessary.
+- No merchant/admin domain, DNS, or app-link changes by implication.
+
+dist:
+- Treat it as generated output; never hand-edit minified files.
+- The current .gitignore excludes dist. Follow the website's confirmed
+  deployment pipeline rather than the admin portal's artifact convention.
+
+17. TEST PLAN AND REQUIRED EVIDENCE
+----------------------------------------------------------------------
+
+A. Content/configuration tests
+- Exact customer Android package and listing URL are correct everywhere.
+- iOS status is coming_soon and URL is null; no active App Store link.
+- No customer package used for rider downloads.
+- No "5 Days to Launch", stale "Alpha Testing", unverified countdowns,
+  placeholder store IDs, zero-commission contradictions, or fake ratings.
+- Shared page/config content produces consistent text across header,
+  footer, app page, FAQ, and mobile CTA.
+- Only approved routes appear in navigation and the sitemap.
+
+B. Navigation and download browser tests
+- Every route opens directly and survives refresh/back/forward.
+- Existing legal links and legacy anchors remain useful.
+- Mobile drawer opens/closes by button, Escape, and normal navigation;
+  focus stays usable and returns to the opener.
+- Play anchors have the exact intended href and a descriptive name.
+- QR decodes to the same HTTPS Play listing URL.
+- The coming-soon label is discoverable but not a misleading active link.
+- No automatic redirect on iOS/Android/desktop.
+- Merchant/rider/help actions point to their approved existing destinations.
+
+C. Accessibility checks
+- Automated accessibility scan of each unique page template.
+- Manual keyboard, focus visibility, skip link, screen-reader spot check,
+  contrast checks, reduced motion, zoom/reflow, and touch target review.
+- FAQs and mobile menu work without mouse/hover-only instructions.
+- Failures in page transition effects do not hide content.
+
+D. Rendering/SEO/HTTP checks
+- Inspect initial HTML, not just the post-JS DOM, for unique content and
+  correct title, description, canonical, Open Graph image, and links.
+- Every indexable route has the intended HTTP status and canonical URL.
+- Unknown routes and missing assets return 404, not homepage HTML.
+- Trailing slash/redirect behavior is deterministic and loop-free.
+- Sitemap, robots, and preview/production indexability settings are correct.
+- No fake ratings or unpublished iOS URL in JSON-LD.
+
+E. Performance and responsive checks
+- Record repeatable mobile/desktop baseline and final runs.
+- Inspect network requests, image weights, caching, font loading, layout
+  shifts, console errors, hydration issues, and unnecessary third parties.
+- Capture screenshots across the widths in section 11 and short heights.
+- Confirm no horizontal overflow or obscured fixed-position controls.
+
+F. Safety/regression checks
+- Review git diff: only website files/config and approved generated output.
+- No changes in production app/backend repositories.
+- No authenticated admin API requests, secrets, or personal data in output.
+- No new submission, payment, onboarding, or deletion side effects.
+- Browser tests use synthetic fixtures or static content; do not submit
+  real merchant applications, send messages, or create support tickets.
+- Verify external links without performing state-changing production work.
+
+Build checks during implementation:
+- Use the confirmed runtime and lockfile; run the existing npm run build
+  and npm run lint commands, plus the adopted test commands.
+- Record failures accurately; do not call a build-only pass a full QA pass.
+- A deployment preview must be tested with the real hosting rules, not
+  solely a local development server.
+
+18. RELEASE ACCEPTANCE CHECKLIST
+----------------------------------------------------------------------
+
+[ ] Homepage clearly communicates the customer service and download action.
+[ ] Android Google Play links target com.pourexpress.sip and are manually
+    checked on Android and desktop in the intended distribution market.
+[ ] iOS consistently says Coming soon; no unverified active App Store CTA.
+[ ] Rider distribution/onboarding is separately verified or truthfully
+    routed to an approved existing contact channel.
+[ ] Merchant pricing and Terms agree with approved commercial policy.
+[ ] No unsupported launch, income, service-quality, security, or legal claim.
+[ ] All published pages contain reviewed content and functional actions.
+[ ] Existing /about, /privacy, /terms and old anchor journeys remain useful.
+[ ] Mobile, keyboard, contrast, reduced motion, and zoom/reflow checks pass.
+[ ] Unique metadata and essential content exist in initial page HTML.
+[ ] Real 404s, route refresh, redirects, sitemap, robots, and sharing work.
+[ ] Performance results and any reviewed budget exceptions are recorded.
+[ ] Build, lint, adopted tests, and visual regression review are complete.
+[ ] No secrets, customer data, fake forms, admin APIs, or backend changes.
+[ ] Owner approves public contacts, policies, assets, and final preview.
+[ ] Website-only deployment is explicitly approved and rollback is ready.
+
+Do not label the release "production-ready" until these checks have real
+evidence and any exceptions are explicitly reviewed.
+
+19. RELEASE AND ROLLBACK PROCEDURE
+----------------------------------------------------------------------
+
+Before release:
+1. Save the current website commit and deployed artifact/deployment ID.
+2. Keep a known-good build available through the hosting platform.
+3. Confirm changes are isolated to this website's project/environment.
+4. Preview-test routing, HTTP status, caching, headers, and indexability.
+5. Obtain deployment approval and choose an owner-approved release window.
+
+After release:
+1. Check homepage and all major routes on mobile and desktop.
+2. Follow a Play CTA and verify the intended listing; check iOS status.
+3. Check merchant/rider/support destinations without submitting anything.
+4. Check existing legal URLs, unknown-route 404, and missing-asset behavior.
+5. Check console/network errors and host error reports where available.
+6. Record the deployment and send a concise handover to the owner.
+
+Rollback triggers include broken downloads, unusable navigation, blank
+critical pages, broken policy URLs, exposed personal data, incorrect
+commercial promises, or a serious deployment/routing regression.
+
+Rollback method:
+- Restore the previous known-good WEBSITE deployment through its host.
+- Revert only approved website-specific route/header changes if necessary.
+- Re-test the homepage, legal URLs, and intended download destination.
+- Do not roll back mobile apps, merchant dashboard, backend, or database;
+  none is part of this release.
+- Avoid destructive repository resets; preserve user work and release
+  evidence. Deployment rollback is separate from discarding local edits.
+
+20. REQUIRED INPUTS BEFORE IMPLEMENTATION / PUBLICATION
+----------------------------------------------------------------------
+
+Needed early:
+1. Approval of customer-first direction, sitemap, and public brand spelling.
+2. Current approved app screenshots and permission to publish/redact them.
+3. Approved merchant onboarding and merchant sign-in destinations.
+4. Separate approved rider application/download/contact destination.
+5. Public support/contact channels and genuine availability hours.
+6. Confirmed current merchant pricing, commissions, features, and terms.
+7. Verified service-area and delivery-process wording.
+8. Approved company information, images, and any testimonials/logos.
+9. Existing account-deletion process and applicable policy content owner.
+10. Website hosting/deployment details and preview/rollback access.
+
+Already supplied; do not ask the owner again unnecessarily:
+- Android customer package: com.pourexpress.sip.
+- Android published on Google Play.
+- Customer App Store release coming soon; no date supplied.
+
+Not needed for the first release:
+- New production database access or backend write permissions.
+- New payment credentials or app signing keys.
+- Customer/admin authentication tokens.
+- An App Store placeholder URL or invented launch schedule.
+
+Missing content should block only its dependent publication step, not
+safe design, navigation, layout, and Android-download work.
+
+21. POST-LAUNCH OPTIONS: SEPARATE DECISIONS, NOT HIDDEN SCOPE
+----------------------------------------------------------------------
+
+- Activate the real customer App Store listing when published.
+- Add Swahili after translation and localization planning.
+- Add a CMS if actual editing frequency/ownership warrants one.
+- Add approved privacy-aware conversion measurement.
+- Add genuine merchant case studies and verified testimonials.
+- Add useful published help articles and local FAQ search as content grows.
+- Consider public service-area discovery only with an approved, minimal
+  read-only data source; do not expose private operational dashboards.
+- Scope enquiry forms or an iOS mailing list separately with real handling.
+- Treat web ordering, accounts, payments, customer support integration,
+  and new backend workflows as separate products requiring explicit review.
+
+Avoid initial scope expansion into a blog without an editorial owner,
+public live operations maps, fabricated live counters, a public admin login
+promotion, a new wallet/checkout, or duplicate onboarding infrastructure.
+
+22. REFERENCES AND EVIDENCE NOTES
+----------------------------------------------------------------------
+
+Local source evidence inspected:
+- src/App.jsx: current page content, CTA destinations, pricing, footer,
+  policies, animation behavior, and route definitions.
+- src/index.css and src/App.css: tokens, shared styles, reduced motion,
+  and starter-template remnants.
+- src/main.jsx, package.json, package-lock.json presence, eslint.config.js,
+  vite.config.js, index.html, public/sitemap.xml, public/robots.txt,
+  asset inventory, and .gitignore.
+- Store publication/package status supplied by the owner on 28 October 2026.
+
+Primary guidance checked while preparing this plan:
+[S1] Android Developers - Linking to Google Play:
+https://developer.android.com/distribute/marketing-tools/linking-to-google-play
+
+[S2] Android Developers - Brand and marketing resources / official badges:
+https://developer.android.com/distribute/marketing-tools
+
+[S3] Google Search Central - JavaScript SEO basics:
+https://developers.google.com/search/docs/crawling-indexing/javascript/javascript-seo-basics
+
+[S4] W3C - How to Meet WCAG 2.2 quick reference:
+https://www.w3.org/WAI/WCAG22/quickref/
+
+[S5] web.dev - Web Vitals:
+https://web.dev/articles/vitals
+
+These references inform requirements, not a claim that the existing site
+or a proposed implementation already meets them. Recommendations, phase
+estimates, design tokens, architecture, and budgets are project proposals
+to validate during implementation, not copied product guarantees.
+
+END OF PLAN
+
+IMPLEMENTATION ADDENDUM - 29 OCTOBER 2026
+=========================================
+This historical plan is retained as the design/scope record. Implementation
+has now been completed locally in the PourExpress website repository.
+Nothing has been deployed, committed or pushed.
+
+Owner decisions made after planning supersede the corresponding proposals:
+- Customer AND rider downloads use the same confirmed published package,
+  com.pourexpress.sip. Do not hide the rider link as unconfirmed/separate.
+- Merchant destination: https://merchants.pourexpress.co.ke
+- Support: support@pourexpress.co.ke; WhatsApp +254718258821.
+- Existing Free/Base/Pro/Enterprise prices and commissions were reconfirmed.
+- Explicit permission was given to align website Terms fees with those
+  prices. No production billing or other Terms/Privacy claims were changed.
+- Supplied app screenshots were approved for use, with transaction and
+  route details redacted from the rider and tracking previews.
+
+Implemented: eleven pages, shared responsive design, working local FAQ
+search, real download/support handoffs, screenshot privacy derivatives,
+offline QR, per-route static HTML/metadata, 404, sitemap/robots, tests and
+local preview. Account-deletion content remains gated, pending verification
+of the actual process. New backend flows, forms, analytics and deployment
+remain out of scope.
+
+Final local checks passed: lint,21 tests,production build,11 direct-route
+browser checks,113 layout checks,23 axe scans with zero detected violations.
+Axe incomplete contrast checks still require manual review. Safari/Firefox,
+physical devices, actual host behavior and legal/content approval remain
+release gates. Lighthouse installation was blocked by a full C: drive;
+no Lighthouse or field-performance pass is claimed.
+
+Read POUREXPRESS_WEBSITE_IMPLEMENTATION_REPORT.txt for evidence, limits and
+the release checklist; README.md for commands/hosting contract; and
+ASSET_PROVENANCE.txt for sources, saved paths and image prompt specifications.
+Separate production deployment approval and a rollback record are required.
+
+END OF IMPLEMENTATION ADDENDUM
