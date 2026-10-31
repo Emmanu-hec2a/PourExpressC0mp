@@ -120,12 +120,13 @@ async function findFile(root, filename) {
   }
 }
 
-async function sendFile(request, response, file, statusCode) {
+async function sendFile(request, response, file, statusCode, headers = {}) {
   response.writeHead(statusCode, {
     'Content-Type': mimeTypes[extname(file.filename).toLowerCase()] ?? 'application/octet-stream',
     'Content-Length': file.size,
     'Cache-Control': 'no-cache',
     'X-Content-Type-Options': 'nosniff',
+    ...headers,
   });
   if (request.method === 'HEAD') {
     await file.handle.close();
@@ -148,11 +149,26 @@ export function createPreviewServer({ root = defaultRoot } = {}) {
       return;
     }
     const pathname = decodePathname(request.url ?? '/');
+    // Mirror only the scoped app-link rules in public/_redirects and _headers.
+    const headers = pathname.startsWith('/open/') ? {
+      'Referrer-Policy': 'no-referrer',
+      'X-Robots-Tag': 'noindex, nofollow',
+      'Cache-Control': 'no-store',
+    } : pathname === '/.well-known/assetlinks.json' ? {
+      'Cache-Control': 'public, max-age=300',
+    } : {};
+    if (pathname.startsWith('/open/orders/')) {
+      const fallback = await findFile(distRoot, resolve(distRoot, 'open/orders/index.html'));
+      if (fallback) {
+        await sendFile(request, response, fallback, 200, headers);
+        return;
+      }
+    }
     const filename = resolve(distRoot, `.${pathname}`);
     const exact = pathname.endsWith('/') ? null : await findFile(distRoot, filename);
     const file = exact ?? (await findFile(distRoot, resolve(filename, 'index.html')));
     if (file) {
-      await sendFile(request, response, file, 200);
+      await sendFile(request, response, file, 200, headers);
       return;
     }
     // An absent asset stays a plain 404; it never receives the homepage shell.

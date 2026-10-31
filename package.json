@@ -5,7 +5,11 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "node scripts/generate-qr.mjs && vite build && vite build --ssr src/entry-server.jsx --outDir .prerender && node scripts/prerender.mjs",
+    "build": "node scripts/generate-qr.mjs && vite build && vite build --ssr src/entry-server.jsx --outDir .prerender && node scripts/prerender.mjs && node scripts/verify-app-links.mjs --build",
+    "verify:app-links": "node scripts/verify-app-links.mjs --build",
+    "verify:app-links:live": "node scripts/verify-app-links.mjs --live",
+    "deploy": "node scripts/deploy-website.mjs",
+    "deploy:ci": "node scripts/deploy-website.mjs --built",
     "lint": "eslint .",
     "preview": "node scripts/preview.mjs",
     "test": "node --test tests",

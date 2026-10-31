@@ -1,0 +1,105 @@
+POURXPRESS WEBSITE: APP-LINK PRODUCTION DEPLOYMENT
+Prepared 31 October 2026 (Africa/Nairobi)
+
+REPOSITORY / SCOPE
+GitHub: https://github.com/Emmanu-hec2a/PourExpressC0mp
+Local checkout: C:\Users\PC\Desktop\PourExpress
+Local branch/upstream: main / origin/main
+Configured Worker: pourexpressc0mp (left unchanged)
+Configured assets directory: ./dist
+Public domain: https://pourexpress.co.ke
+
+This is the public website repository, not PourSADMIN, the backend engine, or
+the Flutter app repository. No new Site, Worker, DNS record, or domain connection
+is created by these changes.
+
+EXISTING GIT-CONNECTED CLOUDFLARE BUILD
+In the existing website project's production build settings:
+1. Confirm the connected repository is Emmanu-hec2a/PourExpressC0mp.
+2. Confirm its production branch. The local checkout tracks origin/main; do not
+   change a different configured production branch without reviewing that choice.
+3. Root directory: repository root (package.json and wrangler.json are there).
+4. Runtime: Node 22.12+ or a compatible newer release, such as Node 24.
+   Local Node 20 runs the website build/tests, but not installed Wrangler.
+5. Build command: npm run build
+6. Production deploy command: npm run deploy:ci
+7. Keep existing preview/non-production settings separate. This command deploys
+   the configured production Worker and checks the public production domain;
+   it is not a preview-version upload command.
+8. Use the existing project's Cloudflare build/deployment credentials. Do not
+   put tokens, OAuth state, .dev.vars, or secrets in the repository or chat.
+
+The command uses the already-built dist, runs npm test, checks the production
+artifact, invokes installed/locked Wrangler with the existing explicit config,
+then performs GET-only public URL verification. It does not download another
+Wrangler version or open an OAuth browser.
+It stops on errors; it does not attempt automatic production rollbacks.
+
+SOURCE FILES THAT MUST REACH THE PRODUCTION BRANCH
+The new public assets were initially untracked locally. A Git-connected build
+cannot include uncommitted files from this machine.
+Include the reviewed app-link changes, not built output or unrelated work:
+- package.json
+- README.md
+- APP_LINKS_CLOUDFLARE_DEPLOYMENT.txt
+- scripts/preview.mjs
+- scripts/verify-app-links.mjs
+- scripts/deploy-website.mjs
+- public/.well-known/assetlinks.json
+- public/_redirects
+- public/_headers
+- public/open/stores/index.html
+- public/open/orders/index.html
+- public/open/app-link-target.js
+- public/open/app-link.js
+- public/open/app-link.css
+- tests/customer-app-links.test.mjs
+- tests/app-link-release.test.mjs
+
+Do not commit dist or .prerender; Cloudflare builds dist from tracked source.
+No dependency-version change is needed. Review the diff and publish through the
+existing authorized Git workflow. The assistant did not commit, push, or modify
+Cloudflare dashboard settings.
+
+BUILD GUARD
+npm run build verifies that all eight required assets exist in dist and match
+their public source files byte-for-byte. It checks the app ID, Play signing
+fingerprint, fallback HTML, proxy rule, JSON MIME configuration, and privacy
+headers. Missing files fail the build instead of silently allowing SPA fallback.
+
+LIVE CHECK
+Run after the Git-connected deployment completes:
+  npm run verify:app-links:live
+
+This makes GET requests only. The association and script/style assets must not
+redirect. Fallback HTML may use only its exact same-origin trailing-slash
+canonical redirect, matching Cloudflare's default folder-index handling.
+- /.well-known/assetlinks.json: 200 application/json, approved app/certificate.
+- /open/stores: dedicated app-launch fallback, not the marketing homepage.
+- /open/orders/1: generic fallback, never an API/order-data request.
+- /open/app-link.js, /open/app-link-target.js, /open/app-link.css: actual assets.
+- Fallback privacy headers: no-referrer, noindex, no-store.
+
+A 200 text/html response for assetlinks.json is a failure, not success.
+If post-deployment verification fails, the Worker upload may already have
+succeeded. Inspect the URLs and domain/Worker mapping before retrying. A failed
+final check does not necessarily mean that nothing was deployed.
+The existing global SPA setting is unchanged. These checks protect required
+app-link endpoints, not every website 404/SEO routing rule.
+
+CURRENT OPERATOR REQUIREMENTS
+Publishing is via the owner-confirmed Git-connected Cloudflare build.
+The assistant has not authenticated to Cloudflare or changed its build settings.
+The local machine has Node 20 and very little free disk space. It is not being
+used to install another Node runtime or produce a signed Android release.
+The read-only live verifier must pass before declaring the website side live.
+
+ANDROID IS A SEPARATE RELEASE
+The association uses the owner-supplied Play app-signing fingerprint:
+C0:72:52:06:21:2B:39:8A:5B:6B:01:C3:CA:CF:A9:9D:5A:BF:5E:89:D1:41:AB:34:8C:F1:9E:10:4E:8A:09:C8
+
+The updated Android build must also be published and installed. Complete domain
+verification and real-device email tests using a Play-signed internal test build.
+Neither a Git push nor a passing website check updates installed apps.
+Until then, users can use the website fallback and existing in-app Stores/Orders.
+No iOS release is claimed; App Store remains coming soon.

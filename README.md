@@ -1,8 +1,20 @@
 # PourXpress public website
 
-Local-only redesign of the public website. Production customer/rider apps,
-merchant dashboard, backend and Super Admin portal are outside this repository's
-changes. Nothing has been deployed.
+Public marketing website and Android app-link fallback pages. Customer/rider app
+binaries, merchant dashboard, backend and Super Admin portal are outside this
+repository. Website changes and Android app releases are deployed separately.
+
+Git remote: https://github.com/Emmanu-hec2a/PourExpressC0mp (local branch: main).
+For the existing Git-connected Cloudflare production build, see
+[APP_LINKS_CLOUDFLARE_DEPLOYMENT.txt](./APP_LINKS_CLOUDFLARE_DEPLOYMENT.txt).
+A successful HTTP 200 is not proof of readiness: missing app-link files can
+incorrectly return homepage HTML. The build now checks the required artifacts.
+
+Production CI: build command = npm run build; deploy command = npm run deploy:ci.
+Use Node 22.12+ or a compatible newer release. The deployment command runs tests,
+verifies the existing Worker/artifact, publishes with locked local Wrangler,
+and then checks the public URLs. It is NOT a preview-branch upload command.
+To check live URLs without publishing, run npm run verify:app-links:live.
 
 ## Develop and verify
 

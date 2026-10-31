@@ -1,0 +1,12 @@
+[
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "com.pourexpress.sip",
+      "sha256_cert_fingerprints": [
+        "C0:72:52:06:21:2B:39:8A:5B:6B:01:C3:CA:CF:A9:9D:5A:BF:5E:89:D1:41:AB:34:8C:F1:9E:10:4E:8A:09:C8"
+      ]
+    }
+  }
+]
