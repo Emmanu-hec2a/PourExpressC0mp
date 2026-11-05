@@ -9,6 +9,7 @@ export const signingFingerprint = 'C0:72:52:06:21:2B:39:8A:5B:6B:01:C3:CA:CF:A9:
 export const requiredAppLinkAssets = Object.freeze([
   '.well-known/assetlinks.json', '_redirects', '_headers',
   'open/stores/index.html', 'open/orders/index.html',
+  'open/order-fallback.html',
   'open/app-link.js', 'open/app-link-target.js', 'open/app-link.css',
 ]);
 
@@ -31,6 +32,15 @@ function validateFallback(html, path) {
     path + ': approved Google Play fallback missing.');
 }
 
+export function validateOrderRedirects(text) {
+  const rules = text.split(/\r?\n/).map(line => line.trim())
+    .filter(line => line && !line.startsWith('#')).map(line => line.split(/\s+/));
+  const orderRules = rules.filter(([source]) => source === '/open/orders/*');
+  assert.equal(orderRules.length, 1, 'Exactly one order fallback proxy rule is required.');
+  assert.deepEqual(orderRules[0], ['/open/orders/*', '/open/order-fallback', '200'],
+    'Order fallback must proxy outside /open/orders/* to /open/order-fallback; HTML normalization can otherwise loop.');
+}
+
 export async function verifyBuild({ root = websiteRoot, production = false } = {}) {
   const config = JSON.parse(await readFile(resolve(root, 'wrangler.json'), 'utf8'));
   assert.equal(config.name, 'pourexpressc0mp', 'Unexpected deployment target; review before publishing.');
@@ -46,9 +56,12 @@ export async function verifyBuild({ root = websiteRoot, production = false } = {
   for (const name of ['stores', 'orders']) {
     validateFallback(await readBuilt('open/' + name + '/index.html'), '/open/' + name);
   }
-  const redirects = await readBuilt('_redirects');
-  assert.ok(redirects.split(/\r?\n/).some((line) =>
-    line.trim() === '/open/orders/* /open/orders/index.html 200'), 'Order fallback proxy rule missing.');
+  const fallback = await readBuilt('open/order-fallback.html');
+  validateFallback(fallback, '/open/order-fallback');
+  assert.equal(fallback.replaceAll('\r\n', '\n'),
+    (await readBuilt('open/orders/index.html')).replaceAll('\r\n', '\n'),
+    'Order fallback is stale; keep both standalone order pages in sync.');
+  validateOrderRedirects(await readBuilt('_redirects'));
   const blocks = (await readBuilt('_headers')).replaceAll('\r\n', '\n').split(/\n\s*\n/);
   const associationHeaders = blocks.find((block) => block.startsWith('/.well-known/assetlinks.json\n')) || '';
   const privateHeaders = blocks.find((block) => block.startsWith('/open/*\n')) || '';

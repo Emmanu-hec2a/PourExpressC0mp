@@ -157,8 +157,8 @@ export function createPreviewServer({ root = defaultRoot } = {}) {
     } : pathname === '/.well-known/assetlinks.json' ? {
       'Cache-Control': 'public, max-age=300',
     } : {};
-    if (pathname.startsWith('/open/orders/')) {
-      const fallback = await findFile(distRoot, resolve(distRoot, 'open/orders/index.html'));
+    if (pathname.startsWith('/open/orders/') || pathname === '/open/order-fallback' || pathname === '/open/order-fallback.html') {
+      const fallback = await findFile(distRoot, resolve(distRoot, 'open/order-fallback.html'));
       if (fallback) {
         await sendFile(request, response, fallback, 200, headers);
         return;

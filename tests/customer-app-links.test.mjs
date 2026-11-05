@@ -5,6 +5,7 @@ import { once } from 'node:events';
 import { runInNewContext } from 'node:vm';
 import { createPreviewServer } from '../scripts/preview.mjs';
 import { androidIntentFor, parseAppLink, playStoreUrl } from '../public/open/app-link-target.js';
+import { validateOrderRedirects } from '../scripts/verify-app-links.mjs';
 
 test('only canonical, approved stores and order destinations can be opened', () => {
   assert.deepEqual(parseAppLink('/open/stores'), { path: '/open/stores', kind: 'stores' });
@@ -58,7 +59,10 @@ test('fallbacks work without React and disclose no transaction or route data', a
 
 test('deployment rewrite and headers retain numeric order paths and privacy', async () => {
   const redirects = await readFile(new URL('../dist/_redirects', import.meta.url), 'utf8');
-  assert.ok(redirects.includes('/open/orders/* /open/orders/index.html 200'));
+  validateOrderRedirects(redirects);
+  const fallback = await readFile(new URL('../dist/open/order-fallback.html', import.meta.url), 'utf8');
+  const original = await readFile(new URL('../dist/open/orders/index.html', import.meta.url), 'utf8');
+  assert.equal(fallback.replaceAll('\r\n', '\n'), original.replaceAll('\r\n', '\n'));
   const headers = await readFile(new URL('../dist/_headers', import.meta.url), 'utf8');
   assert.ok(headers.includes('Content-Type: application/json'));
   assert.ok(headers.includes('Referrer-Policy: no-referrer'));
@@ -72,9 +76,10 @@ test('local HTTP mirrors the Cloudflare order fallback and association rules', a
   server.listen(0, '127.0.0.1');
   await once(server, 'listening');
   const origin = 'http://127.0.0.1:' + server.address().port;
-  for (const path of ['/open/stores', '/open/orders/42', '/open/orders/42/']) {
-    const response = await fetch(origin + path);
+  for (const path of ['/open/stores', '/open/orders/42', '/open/orders/42/', '/open/order-fallback']) {
+    const response = await fetch(origin + path, { redirect: 'manual' });
     assert.equal(response.status, 200, path);
+    assert.equal(response.headers.get('location'), null, path + ' must preserve the original browser path');
     assert.equal(response.headers.get('referrer-policy'), 'no-referrer');
     assert.equal(response.headers.get('cache-control'), 'no-store');
     assert.equal(response.headers.get('x-robots-tag'), 'noindex, nofollow');
@@ -90,6 +95,10 @@ test('local HTTP mirrors the Cloudflare order fallback and association rules', a
   assert.equal(association.status, 200);
   assert.match(association.headers.get('content-type'), /application\/json/);
   assert.equal((await association.json())[0].target.package_name, 'com.pourexpress.sip');
+  const head = await fetch(origin + '/open/orders/42', { method: 'HEAD', redirect: 'manual' });
+  assert.equal(head.status, 200);
+  assert.equal(head.headers.get('cache-control'), 'no-store');
+  assert.equal(await head.text(), '');
 });
 
 test('fallback DOM logic shows an explicit launch only for valid Android links', async () => {

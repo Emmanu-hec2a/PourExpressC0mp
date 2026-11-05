@@ -1,1 +1,2 @@
-/open/orders/* /open/orders/index.html 200
+# Keep the target and its clean HTML URL outside the matched order-path prefix.
+/open/orders/* /open/order-fallback 200

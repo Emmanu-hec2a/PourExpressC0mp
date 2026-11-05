@@ -4,7 +4,7 @@ import { copyFile, mkdir, mkdtemp, readFile, rm, unlink, writeFile } from 'node:
 import { basename, dirname, join, resolve } from 'node:path';
 import test from 'node:test';
 import {
-  appLinkOrigin, requiredAppLinkAssets, validateAssociation,
+  appLinkOrigin, requiredAppLinkAssets, validateAssociation, validateOrderRedirects,
   verifyBuild, verifyLive, websiteRoot,
 } from '../scripts/verify-app-links.mjs';
 import { requireDeploymentRuntime } from '../scripts/deploy-website.mjs';
@@ -32,6 +32,34 @@ async function fixture(t) {
 test('release verifier accepts the complete built app-link artifact', async () => {
   assert.deepEqual(await verifyBuild({ production: true }),
     { assets: requiredAppLinkAssets.length, worker: 'pourexpressc0mp' });
+});
+
+test('order rewrite cannot loop through an HTML or index canonical URL', () => {
+  assert.doesNotThrow(() => validateOrderRedirects('# scoped fallback\n/open/orders/* /open/order-fallback 200\n'));
+  for (const target of ['/open/orders/index.html', '/open/orders/index', '/open/orders/', '/open/orders/42']) {
+    assert.throws(() => validateOrderRedirects('/open/orders/* ' + target + ' 200'), /outside/);
+  }
+  assert.throws(() => validateOrderRedirects('/open/orders/* /open/order-fallback 302'), /outside/);
+  assert.throws(() => validateOrderRedirects(''), /Exactly one/);
+  assert.throws(() => validateOrderRedirects('/open/orders/* /open/order-fallback 200\n/open/orders/* /open/orders/index.html 200'), /Exactly one/);
+});
+
+test('release verification rejects the old rule even when source and build agree', async (t) => {
+  const root = await fixture(t);
+  for (const dir of ['public', 'dist']) {
+    await writeFile(join(root, dir, '_redirects'), '/open/orders/* /open/orders/index.html 200\n');
+  }
+  await assert.rejects(verifyBuild({ root }), /outside/);
+});
+
+test('release verification requires the non-recursive fallback and prevents copy drift', async (t) => {
+  const root = await fixture(t);
+  const fallback = 'open/order-fallback.html';
+  await unlink(join(root, 'dist', fallback));
+  await assert.rejects(verifyBuild({ root }), /ENOENT/);
+  const changed = (await readFile(join(root, 'public', fallback), 'utf8')).replace('Follow your order', 'Outdated copy');
+  for (const dir of ['public', 'dist']) await writeFile(join(root, dir, fallback), changed);
+  await assert.rejects(verifyBuild({ root }), /fallback is stale/);
 });
 
 test('release verifier rejects a missing association instead of allowing SPA fallback', async (t) => {

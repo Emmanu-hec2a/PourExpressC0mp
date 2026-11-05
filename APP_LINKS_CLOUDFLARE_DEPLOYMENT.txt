@@ -50,6 +50,7 @@ Include the reviewed app-link changes, not built output or unrelated work:
 - public/_headers
 - public/open/stores/index.html
 - public/open/orders/index.html
+- public/open/order-fallback.html
 - public/open/app-link-target.js
 - public/open/app-link.js
 - public/open/app-link.css
@@ -62,10 +63,40 @@ existing authorized Git workflow. The assistant did not commit, push, or modify
 Cloudflare dashboard settings.
 
 BUILD GUARD
-npm run build verifies that all eight required assets exist in dist and match
+npm run build verifies that all nine required assets exist in dist and match
 their public source files byte-for-byte. It checks the app ID, Play signing
 fingerprint, fallback HTML, proxy rule, JSON MIME configuration, and privacy
 headers. Missing files fail the build instead of silently allowing SPA fallback.
+
+REDIRECT LOOP FIX - 5 NOVEMBER 2026
+Cloudflare rejected the old rule:
+  /open/orders/* /open/orders/index.html 200
+The wildcard-to-index target conflicts with Cloudflare HTML canonicalization.
+The replacement preserves existing email/app URLs using a non-recursive target:
+  /open/orders/* /open/order-fallback 200
+That clean target serves public/open/order-fallback.html. Keep its HTML in sync
+with public/open/orders/index.html; the build verifies both copies. The original
+browser order URL remains intact, so the existing Android intent validation and
+order destination do not change. No backend lookup or transaction data is added.
+The build rejects the old rule, duplicate order rules, redirect status codes,
+missing fallback assets, and mismatched fallback copies.
+
+Local verification for this fix:
+- npm run build: passed; eleven pages plus 404, nine app-link assets verified.
+- npm test: all 45 tests passed, including old-rule regression and HTTP/HEAD.
+- Installed local Cloudflare simulator: order paths, optional trailing slash,
+  maximum supported order ID, fallback target, privacy headers, stores URL
+  canonicalization, and Android association passed. No production requests.
+The simulator check used Miniflare's v4 options adapter because the installed
+Miniflare version uses the v5 configuration API. It is a local routing check,
+not a successful Cloudflare API upload or a production verification.
+
+Include the new fallback file when committing/pushing this website fix. Rebuild
+through the existing Git-connected website project and use npm run deploy:ci
+as the production deploy command. Do not deploy stale dist from an older build.
+The Worker name, domain, Wrangler settings, dependencies and app signing
+fingerprint remain unchanged. The assistant did not commit, push, deploy,
+change Cloudflare settings, or modify the portal/backend/mobile repositories.
 
 LIVE CHECK
 Run after the Git-connected deployment completes:
